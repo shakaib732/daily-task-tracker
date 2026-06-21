@@ -3,18 +3,13 @@ const router = express.Router();
 const { validateTaskSchema, validateObjectId } = require('../validators/taskValidaions')
 const { isAuthorized } = require('../authentiction/authorization')
 
-const {
-    getTasks,
-    getTaskById,
-    createTask,
-    updateTask,
-    deleteTask
-} = require('../controllers/taskController')
+const TaskController = require('../controllers/taskController');
+const taskController = new TaskController();
 
-router.get('/', isAuthorized, getTasks);
-router.get('/:id',isAuthorized, validateObjectId, getTaskById)
-router.post('/', isAuthorized, validateTaskSchema, createTask)
-router.put('/:id', isAuthorized, validateObjectId, updateTask)
-router.delete('/:id', isAuthorized, validateObjectId, deleteTask)
+router.get('/', isAuthorized, taskController.getTasks);
+router.get('/:id',isAuthorized, validateObjectId, taskController.getTaskById)
+router.post('/', isAuthorized, validateTaskSchema, taskController.createTask)
+router.put('/:id', isAuthorized, validateObjectId, taskController.updateTask)
+router.delete('/:id', isAuthorized, validateObjectId, taskController.deleteTask)
 
 module.exports = router;

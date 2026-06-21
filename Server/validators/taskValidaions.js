@@ -12,7 +12,6 @@ const taskSchema = Joi.object({
 
 const validateTaskSchema = async (req, res, next) => {
     const result = taskSchema.validate(req.body);
-    console.log(result)
     if (result.error)
         return res.status(400).json({
             message: result.error.message
