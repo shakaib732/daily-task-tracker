@@ -4,7 +4,12 @@ const { validateTaskSchema, validateObjectId } = require('../validators/taskVali
 const { isAuthorized } = require('../authentiction/authorization')
 
 const TaskController = require('../controllers/taskController');
-const taskController = new TaskController();
+const TaskServices = require('../services/taskServices')
+const TaskRepository = require('../repository/taskRepository')
+
+const taskRepository =  new TaskRepository();
+const taskServices = new TaskServices(taskRepository)
+const taskController = new TaskController(taskServices);
 
 router.get('/', isAuthorized, taskController.getTasks);
 router.get('/:id',isAuthorized, validateObjectId, taskController.getTaskById)
