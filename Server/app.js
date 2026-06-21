@@ -3,8 +3,8 @@ const cors = require('cors');
 const taskRoutes = require('./routes/taskRoutes')
 const handleError = require('./globalErrorHandling/errorHandler');
 const app = express();
-app.use(cors());
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/tasks', taskRoutes);

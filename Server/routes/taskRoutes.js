@@ -11,13 +11,10 @@ const {
     deleteTask
 } = require('../controllers/taskController')
 
-
-
 router.get('/', isAuthorized, getTasks);
 router.get('/:id',isAuthorized, validateObjectId, getTaskById)
 router.post('/', isAuthorized, validateTaskSchema, createTask)
 router.put('/:id', isAuthorized, validateObjectId, updateTask)
 router.delete('/:id', isAuthorized, validateObjectId, deleteTask)
-
 
 module.exports = router;

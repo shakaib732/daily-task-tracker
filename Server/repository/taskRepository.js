@@ -1,5 +1,5 @@
-const { ObjectId } = require("mongodb")
 const helper = require('../utils/helper')
+const { ObjectId } = require("mongodb")
 
 const getTasks = async () => {
     const taskCollection = await helper.getTasks();
@@ -25,6 +25,5 @@ const deleteTask = async (id) => {
     const taskCollection = await helper.getTasks();
     return taskCollection.deleteOne({ _id: new ObjectId(id) })
 }
-
 
 module.exports = { getTasks, getTaskById, createTask, updateTask, deleteTask }

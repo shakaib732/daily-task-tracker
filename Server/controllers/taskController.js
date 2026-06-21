@@ -4,10 +4,7 @@ const getTasks = async (req, res, next) => {
     try {
         const result = await taskServices.getTasks()
         res.status(200).json(result)
-
-    } catch (error) {
-        next(error)
-    }
+    } catch (error) { next(error) }
 }
 
 const getTaskById = async (req, res, next) => {
@@ -15,10 +12,7 @@ const getTaskById = async (req, res, next) => {
         const { id } = req.params;
         const result = await taskServices.getTaskById(id);
         res.status(200).json(result);
-
-    } catch (error) {
-        next(error)
-    }
+    } catch (error) { next(error) }
 }
 
 const createTask = async (req, res, next) => {
@@ -29,9 +23,7 @@ const createTask = async (req, res, next) => {
             message: 'Task created successfully',
             insertionId: result.insertedId
         })
-    } catch (error) {
-        next(error)
-    }
+    } catch (error) { next(error) }
 }
 
 const updateTask = async (req, res, next) => {
@@ -42,9 +34,7 @@ const updateTask = async (req, res, next) => {
         res.status(201).json({
             meesage: 'Task updated successfully'
         })
-    } catch (error) {
-        next(error)
-    }
+    } catch (error) { next(error) }
 }
 
 const deleteTask = async (req, res, next) => {
@@ -55,9 +45,7 @@ const deleteTask = async (req, res, next) => {
             message: 'Task Deleted Succssfully',
             deleteCount: result.deleteCount
         })
-    } catch (error) {
-        next(error)
-    }
+    } catch (error) { next(error) }
 }
 
 module.exports = { getTasks, getTaskById, createTask, updateTask, deleteTask }

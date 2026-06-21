@@ -1,6 +1,4 @@
-const { ObjectId } = require('mongodb');
 const taskRepository = require('../repository/taskRepository')
-
 
 const getTasks = async () => {
     try {
@@ -13,12 +11,8 @@ const getTaskById = async (id) => {
     try {
         const result = await taskRepository.getTaskById(id);
         return result;
-    } catch (error) {
-        throw error;
-    }
-
+    } catch (error) { throw error };
 }
-
 
 const createTask = async (taskDetails) => {
     try {
@@ -38,8 +32,6 @@ const deleteTask = async (id) => {
         const result = await taskRepository.deleteTask(id);
         return result
     } catch (error) { throw error };
-
-
 }
 
 module.exports = { getTasks, getTaskById, createTask, updateTask, deleteTask }

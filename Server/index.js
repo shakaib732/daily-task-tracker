@@ -5,7 +5,6 @@ const { connectDB } = require('./db/connection')
 const PORT = process.env.PORT || 8080;
 
 const startServer = async () => {
-
     await connectDB();
     app.listen(PORT, () => {
         console.log(`Server running at PORT http://localhost:${PORT}`)
