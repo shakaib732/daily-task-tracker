@@ -1,9 +1,11 @@
 import axios from "axios";
-import { createContext } from "react";
+import { createContext,useContext } from "react";
+import {ErrorContext} from '../errorProvider/errorContext'
 
 const ApiContext = createContext();
 
 function ApiProvider({ children }) {
+    const {showError} = useContext(ErrorContext)
 
     const baseUrl = "http://localhost:8080";
     const apiKey = "j8ys5hdsogj90-jdgdn&9fkkshdsd";
@@ -17,8 +19,9 @@ function ApiProvider({ children }) {
             });
 
             return res.data;
-        } catch (err) {
-            return error;
+        } catch (error) {
+            showError(error.response?.data?.message)
+            throw error;
         }
     };
 
@@ -36,7 +39,8 @@ function ApiProvider({ children }) {
             return res.data;
         }
         catch(err){
-            return err
+            showError(error.response?.data?.message)
+            throw error;
         }
     }
 
@@ -54,7 +58,8 @@ function ApiProvider({ children }) {
             return res.data;
         }
         catch(err){
-            return err
+            showError(error.response?.data?.message)
+            throw error;
         }
     }
 
@@ -71,7 +76,8 @@ function ApiProvider({ children }) {
             return res.data;
         }
         catch(err){
-            return err
+            showError(error.response?.data?.message)
+            throw error;
         }
     }
 

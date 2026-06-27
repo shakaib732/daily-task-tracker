@@ -1,8 +1,13 @@
 import React from 'react'
+import ErrorModal from '../errorProvider/ErrorModal'
 
 function Download() {
+
+  const onCloseClicked = () =>{
+    console.log('closed')
+  }
   return (
-    <div>Download</div>
+    <ErrorModal onClose={() => setIsModalOpen(false)}/>
   )
 }
 

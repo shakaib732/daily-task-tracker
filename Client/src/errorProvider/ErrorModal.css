@@ -1,0 +1,143 @@
+/* ==========================================================================
+   1. New Modal Backdrop & Close Button Additions
+   ========================================================================== */
+
+/* Dark, blurred overlay that sits behind the modal card */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+   background: rgba(238, 13, 13, 0.466); 
+  backdrop-filter: blur(10px);     
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;                 /* Keeps it above all normal content */
+}
+
+/* Container to align status and close button neatly */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Sleek close button styling */
+.close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #6e0c0c; /* Clean error red on hover */
+  background: rgba(8, 5, 5, 0.1);
+}
+
+
+/* ==========================================================================
+   2. Cleaned & Fixed Existing Code
+   ========================================================================== */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  /* backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur)); */
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--inner-glow), var(--glass-shadow); 
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+  
+  /* NEW: Keeps the modal a reasonable width */
+  width: 100%;
+  max-width: 450px; 
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  opacity: 0.7;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background: var(--card-hover-bg);
+  border-color: var(--card-hover-border);
+  box-shadow: 0 12px 28px rgba(99, 102, 241, 0.15), var(--glass-shadow);
+}
+
+.card_header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.card_header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+  margin: 0; /* FIX: Reset default h2 margins to prevent shifting */
+}
+
+/* FIX: Added missing base selector targeting '.status-pending' classes */
+.status, 
+.status-pending, 
+.status-done {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-pending {
+  color: var(--status-pending);
+  background: var(--status-pending-bg);
+  border: 1px solid rgba(255, 5, 5, 0.25);
+}
+
+.card_desc {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+
+.card_dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-top: 1px solid rgba(255, 61, 61, 0.06);
+  padding-top: 0.75rem;
+  font-size: 0.8rem;
+}
