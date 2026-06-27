@@ -1,42 +1,38 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useReducer } from 'react'
+import { ApiContext } from '../../context/apiContext';
+import { taskReducer } from '../../helper/taskReducer';
 import axios from 'axios';
 import './createTask.css'
 
 function CreateTask() {
 
-  const [taskData, updateTaskData] = useState({
+  let initialTaskState = {
     title: '', task: '', createdDate: '', completedDate: '', isCompleted: 'No'
-  })
+  }
 
+  const [taskData, dispatch] = useReducer(taskReducer, initialTaskState)
+  const api = useContext(ApiContext)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const res = await api.post('/tasks', taskData)
 
-    try {
-      const res = await axios.post(
-        "http://localhost:8080/tasks",
-        taskData,
-        {
-          headers: {
-            'x-api-key': 'j8ys5hdsogj90-jdgdn&9fkkshdsd'
-          }
-        }
-      );
+    dispatch({
+      type:'SET_TASK',
+      payload: initialTaskState
+    })
 
-      updateTaskData({
-        title: "",
-        task: "",
-        createdDate: "",
-        completedDate: "",
-        isCompleted: 'No',
-      });
+  }
 
-    } catch (err) {
-      console.log(err)
-      throw err;
-    }
-
+  const updateTaskData = (e) => {
+    dispatch({
+      type: 'UPDATE_FIELD',
+      payload: {
+        field: e.target.name,
+        value: e.target.value
+      }
+    })
   }
 
 
@@ -46,22 +42,22 @@ function CreateTask() {
     <form className='form-createTask' onSubmit={handleSubmit}>
       <div className='task_title'>
         <label>Task Title</label>
-        <input type="text" value={taskData.title} onChange={(event) => updateTaskData({ ...taskData, title: event.target.value })} />
+        <input type="text" value={taskData.title} name='title' onChange={updateTaskData} />
       </div>
 
       <div className='task_desc'>
         <label>Task Description</label>
-        <input type="text" value={taskData.task} onChange={(event) => updateTaskData({ ...taskData, task: event.target.value })} />
+        <input type="text" value={taskData.task} name='task' onChange={updateTaskData} />
       </div>
 
       <div className='task_created'>
         <label>Created Date</label>
-        <input type="text" value={taskData.createdDate} onChange={(event) => updateTaskData({ ...taskData, createdDate: event.target.value })} />
+        <input type="text" value={taskData.createdDate} name='createdDate' onChange={updateTaskData} />
       </div>
 
       <div className='task_completed'>
         <label>Completion Date</label>
-        <input type="text" value={taskData.completedDate} onChange={(event) => updateTaskData({ ...taskData, completedDate: event.target.value })} />
+        <input type="text" value={taskData.completedDate} name='completedDate' onChange={updateTaskData} />
       </div>
 
       <div className='task_isCompleted'>
@@ -70,10 +66,14 @@ function CreateTask() {
           type="radio"
           checked={taskData.isCompleted === 'yes'}
           onChange={(event) => {
-            updateTaskData({
-              ...taskData,
-              isCompleted: event.target.checked ? 'yes' : 'no'
-            });
+
+            dispatch({
+              type: 'UPDATE_FIELD',
+              payload: {
+                field: 'isCompleted',
+                value: event.target.checked ? 'yes' : 'no'
+              }
+            })
           }}
         />
       </div>

@@ -1,37 +1,29 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useReducer } from 'react'
 import axios from 'axios'
 import Card from '../../components/Card'
 import './MyTask.css'
+import { ApiContext } from '../../context/apiContext'
+import { taskReducer } from '../../helper/taskReducer'
 
 function MyTasks() {
-    const [tasks, updateTasks] = useState([])
+    const [tasks, dispatch] = useReducer(taskReducer, []);
+    const api = useContext(ApiContext)
 
     useEffect(() => {
-
-        const fetchTasks = async () => {
-            try {
-                const res = await axios.get("http://localhost:8080/tasks", {
-                    headers: {
-                        'x-api-key': 'j8ys5hdsogj90-jdgdn&9fkkshdsd'
-                    }
-                })
-
-                updateTasks(res.data)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        fetchTasks()
-
-    }, [])
+        api.fetch('/tasks').then((data) => {
+            dispatch({
+                type: "SET_TASK",
+                payload: data
+            });
+        });
+    }, []);
 
     return (
         <div className='cards_container'>
             {
                 tasks.map((task) => {
-                    return <Card taskData={task} />
+                    return <Card key={task._id} taskData={task} />
                 })
             }
         </div>

@@ -1,57 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, useReducer } from 'react';
 import axios from 'axios';
+import { ApiContext } from '../../context/apiContext';
+import { taskReducer } from '../../helper/taskReducer';
 import './deleteTask.css';
 
 function DeleteTask() {
 
-  const [tasks, updateTasks] = useState([])
-
-  const [taskData, updatetaskData] = useState({
+  const initialTaskData = {
     title: '',
     task: '',
     completedData: '',
     createdDate: '',
     isCompleted: ''
-  })
+  }
+
+  const [tasks, taskDispatch] = useReducer(taskReducer, [])
+  const [taskData, taskDataDispatch] = useReducer(taskReducer, initialTaskData)
+  const api = useContext(ApiContext);
 
   useEffect(() => {
     fetchTasks();
   }, [])
 
   const fetchTasks = async () => {
-    const res = await axios.get('http://localhost:8080/tasks', {
-      headers: {
-        'x-api-key': 'j8ys5hdsogj90-jdgdn&9fkkshdsd'
-      }
+
+    const res = await api.fetch('/tasks') 
+    taskDispatch({
+      type: 'SET_TASK',
+      payload: res
     })
-    updateTasks(res.data)
+    // updateTasks(res.data)
   }
 
   const handleChange = (e) => {
     const id = e.target.value;
     const selectedTask = tasks.find(task => task._id == id);
-    updatetaskData(selectedTask)
+    taskDataDispatch({
+      type: 'SET_TASK',
+      payload: selectedTask
+    })
   }
 
   const deleteTask = async (e) => {
     e.preventDefault();
     const { _id, ...formData } = taskData;
-    const res = await axios.delete(`http://localhost:8080/tasks/${taskData._id}`, {
-      headers: {
-        'x-api-key': 'j8ys5hdsogj90-jdgdn&9fkkshdsd'
-      }
+    const res = await api.deleteTask(`/tasks/${taskData._id}`)
+
+   taskDataDispatch({
+      type: 'SET_TASK',
+      payload: initialTaskData
     })
-
-    updatetaskData({
-    title: '',
-    task: '',
-    completedData: '',
-    createdDate: '',
-    isCompleted: ''
-  })
     fetchTasks();
-
-
   }
 
 
@@ -77,7 +76,7 @@ function DeleteTask() {
       {taskData._id ? (
         <div className="delete-preview-card">
           <h2 className="section-title warning-title">Are you sure?</h2>
-          
+
           <div className="preview-details">
             <div className="preview-item">
               <span className="preview-label">Title</span>

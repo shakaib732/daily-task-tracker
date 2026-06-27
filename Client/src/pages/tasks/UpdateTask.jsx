@@ -1,58 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useReducer, useContext } from 'react';
+import { taskReducer } from '../../helper/taskReducer';
+import { ApiContext } from '../../context/apiContext';
 import './updateTask.css';
 
 function UpdateTask() {
-
-  const [tasks, updateTasks] = useState([])
-
-  const [taskData, updatetaskData] = useState({
+  const initialTaskData = {
     title: '',
     task: '',
     completedData: '',
     createdDate: '',
     isCompleted: ''
-  })
+  }
+
+  const api = useContext(ApiContext);
+  const [tasks, taskDispatch] = useReducer(taskReducer, [])
+  const [taskData, taskDataDispatch] = useReducer(taskReducer, initialTaskData)
 
   useEffect(() => {
     fetchTasks();
   }, [])
 
   const fetchTasks = async () => {
-    const res = await axios.get('http://localhost:8080/tasks', {
-      headers: {
-        'x-api-key': 'j8ys5hdsogj90-jdgdn&9fkkshdsd'
-      }
-    })
-    updateTasks(res.data)
+    try {
+      const res = await api.fetch('/tasks');
+      taskDispatch({
+        type: 'SET_TASK',
+        payload: res
+      })
+    }catch(err){
+      console.log("error=>",err);
+      throw err
+    }
+    
   }
 
   const handleChange = (e) => {
     const id = e.target.value;
     const selectedTask = tasks.find(task => task._id == id);
-    updatetaskData(selectedTask)
+    taskDataDispatch({
+      type: 'SET_TASK',
+      payload: selectedTask
+    })
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { _id, ...formData } = taskData;
-    const res = await axios.put(`http://localhost:8080/tasks/${taskData._id}`, formData, {
-      headers: {
-        'x-api-key': 'j8ys5hdsogj90-jdgdn&9fkkshdsd'
-      }
-    })
-
-    console.log(res);
-    updatetaskData({
-      title: '',
-      task: '',
-      completedData: '',
-      createdDate: '',
-      isCompleted: ''
+    const res = await api.put(`/tasks/${taskData._id}`, formData)
+    taskDataDispatch({
+      type: "SET_TASK",
+      payload: initialTaskData
     })
     fetchTasks();
+  }
 
-
+  const updatetaskData = (e) => {
+    taskDataDispatch({
+      type: 'UPDATE_FIELD',
+      payload: {
+        field: e.target.name,
+        value: e.target.value
+      }
+    })
   }
 
 
@@ -81,22 +90,22 @@ function UpdateTask() {
 
           <div className="form-group">
             <label>Task Title</label>
-            <input type="text" value={taskData.title} onChange={(event) => updatetaskData({ ...taskData, title: event.target.value })} />
+            <input type="text" value={taskData.title} name='title' onChange={updatetaskData} />
           </div>
 
           <div className="form-group">
             <label>Task Description</label>
-            <input type="text" value={taskData.task} onChange={(event) => updatetaskData({ ...taskData, task: event.target.value })} />
+            <input type="text" value={taskData.task} name='task' onChange={updatetaskData} />
           </div>
 
           <div className="form-group">
             <label>Created Date</label>
-            <input type="text" value={taskData.createdDate} onChange={(event) => updatetaskData({ ...taskData, createdDate: event.target.value })} />
+            <input type="text" value={taskData.createdDate} name='createdDate' onChange={updatetaskData} />
           </div>
 
           <div className="form-group">
             <label>Completion Date</label>
-            <input type="text" value={taskData.completedDate} onChange={(event) => updatetaskData({ ...taskData, completedDate: event.target.value })} />
+            <input type="text" value={taskData.completedDate} name='completedDate' onChange={updatetaskData} />
           </div>
 
           <div className="form-group row-group">
@@ -105,10 +114,13 @@ function UpdateTask() {
               type="radio"
               checked={taskData.isCompleted === 'yes'}
               onChange={(event) => {
-                updatetaskData({
-                  ...taskData,
-                  isCompleted: event.target.checked ? 'yes' : 'no'
-                });
+                taskDataDispatch({
+                  type: 'UPDATE_FIELD',
+                  payload: {
+                    field: 'isCompleted',
+                    value: event.target.checked ? 'yes' : 'no'
+                  }
+                })
               }}
               className="radio-status"
             />
